@@ -8,6 +8,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+
+# Verificar que FLASK_SECRET_KEY esté configurada
+if not os.getenv('FLASK_SECRET_KEY'):
+    raise RuntimeError("FLASK_SECRET_KEY no está configurada. Asegúrate de configurarla en Render o en .env.")
+
 app.secret_key = os.getenv('FLASK_SECRET_KEY')  # Ahora se toma de variables de entorno
 
 # Configuración de Google Sheets según el entorno
