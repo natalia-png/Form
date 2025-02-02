@@ -3,6 +3,9 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 import gspread
 from google.oauth2.service_account import Credentials
 from dotenv import load_dotenv
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 # Cargar variables de entorno desde un archivo .env
 load_dotenv()
@@ -33,6 +36,34 @@ try:
     worksheet = spreadsheet.sheet1
 except Exception as e:
     print(f"Error en la conexión con Google Sheets: {e}")
+
+# Función para enviar notificaciones por correo electrónico
+def enviar_notificacion():
+    sender_email = "nataliarubio@hye-arquitectos.online"
+    sender_password = "Nataliarubio22"
+    recipient_email = "nataliarubio@hye-arquitectos.online"  # Cambiar por el destinatario deseado
+    smtp_server = "smtp.zoho.com"
+    smtp_port = 465
+
+    try:
+        # Crear el mensaje del correo
+        mensaje = MIMEMultipart()
+        mensaje["From"] = sender_email
+        mensaje["To"] = recipient_email
+        mensaje["Subject"] = "Nuevo registro en Clientes Registrados"
+        body = """
+        Se ha registrado un nuevo cliente en la base de datos.
+        Por favor, verifique los detalles en Google Sheets.
+        """
+        mensaje.attach(MIMEText(body, "plain"))
+
+        # Conectar al servidor SMTP y enviar el correo
+        with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
+            server.login(sender_email, sender_password)
+            server.sendmail(sender_email, recipient_email, mensaje.as_string())
+            print("Correo enviado correctamente.")
+    except Exception as e:
+        print(f"Error al enviar el correo: {e}")
 
 @app.route('/')
 def formulario():
@@ -84,6 +115,9 @@ def registrar():
             telefono, 
             motivo
         ])
+
+        # Enviar notificación por correo
+        enviar_notificacion()
 
         # Confirmar que se completó
         flash('El registro se ha enviado exitosamente.', 'success')
