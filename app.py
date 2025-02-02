@@ -10,8 +10,8 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY')  # Ahora se toma de variables de entorno
 
-# Configuración de Google Sheets con variables de entorno
-SERVICE_ACCOUNT_FILE = os.getenv('GOOGLE_CREDENTIALS_PATH')
+# Configuración de Google Sheets con Secret File en Render
+SERVICE_ACCOUNT_FILE = "/etc/secrets/clientes-registrados.json"  # Ruta fija para Render
 SCOPES = [
     'https://www.googleapis.com/auth/spreadsheets',
     'https://www.googleapis.com/auth/drive'
