@@ -37,31 +37,31 @@ try:
 except Exception as e:
     print(f"Error en la conexión con Google Sheets: {e}")
 
-# Función para enviar notificaciones por correo electrónico
+# Configuración para el correo
+SMTP_SERVER = "smtppro.zoho.com"
+SMTP_PORT = 465  # SSL
+EMAIL = "nataliarubio@hye-arquitectos.online"
+PASSWORD = "Nataliarubio22."  # Asegúrate de que esta sea la contraseña correcta
+
 def enviar_notificacion():
-    sender_email = "nataliarubio@hye-arquitectos.online"
-    sender_password = "Nataliarubio22"
-    recipient_email = "nataliarubio@hye-arquitectos.online"  # Cambiar por el destinatario deseado
-    smtp_server = "smtp.zoho.com"
-    smtp_port = 465
-
+    """Función para enviar notificación por correo al registrarse un cliente."""
     try:
-        # Crear el mensaje del correo
+        # Configurar el mensaje
         mensaje = MIMEMultipart()
-        mensaje["From"] = sender_email
-        mensaje["To"] = recipient_email
-        mensaje["Subject"] = "Nuevo registro en Clientes Registrados"
-        body = """
-        Se ha registrado un nuevo cliente en la base de datos.
-        Por favor, verifique los detalles en Google Sheets.
-        """
-        mensaje.attach(MIMEText(body, "plain"))
+        mensaje["From"] = EMAIL
+        mensaje["To"] = EMAIL  # Puedes cambiarlo si necesitas enviar a otro correo
+        mensaje["Subject"] = "Nuevo registro de cliente"
+        cuerpo = (
+            "Se ha registrado un nuevo cliente en la base de datos. "
+            "Por favor, verifica la información en el sistema de Clientes Registrados."
+        )
+        mensaje.attach(MIMEText(cuerpo, "plain"))
 
-        # Conectar al servidor SMTP y enviar el correo
-        with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
-            server.login(sender_email, sender_password)
-            server.sendmail(sender_email, recipient_email, mensaje.as_string())
-            print("Correo enviado correctamente.")
+        # Conexión al servidor SMTP
+        with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as servidor:
+            servidor.login(EMAIL, PASSWORD)
+            servidor.sendmail(EMAIL, EMAIL, mensaje.as_string())
+        print("Correo de notificación enviado exitosamente.")
     except Exception as e:
         print(f"Error al enviar el correo: {e}")
 
