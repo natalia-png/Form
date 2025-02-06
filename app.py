@@ -49,7 +49,7 @@ def enviar_notificacion():
         # Configurar el mensaje
         mensaje = MIMEMultipart()
         mensaje["From"] = EMAIL
-        mensaje["To"] = EMAIL  # Puedes cambiarlo si necesitas enviar a otro correo
+        mensaje["To"] = EMAIL
         mensaje["Subject"] = "Nuevo registro de cliente"
         cuerpo = (
             "Se ha registrado un nuevo cliente en la base de datos. "
@@ -64,6 +64,45 @@ def enviar_notificacion():
         print("Correo de notificación enviado exitosamente.")
     except Exception as e:
         print(f"Error al enviar el correo: {e}")
+
+def enviar_correo_usuario(destinatario):
+    """Enviar correo de confirmación al usuario registrado."""
+    try:
+        # HTML del correo
+        cuerpo_html = f"""
+        <html>
+            <body>
+                <p>Estimado(a),</p>
+                <p>Gracias por registrarse en <b>HYE Arquitectos</b>. Hemos recibido su información y la estamos analizando.</p>
+                <p>Nos pondremos en contacto con usted muy pronto para discutir su solicitud.</p>
+                <p>Si tiene alguna consulta mientras tanto, no dude en comunicarse con nosotros.</p>
+                <br>
+                <p>Atentamente,</p>
+                <p><b>Equipo de HYE Arquitectos</b></p>
+                <br>
+                <img src="https://ruta_publica_a_tu_imagen_de_firma.com/firma.png" alt="Firma de HYE Arquitectos" style="width: 200px;">
+                <br>
+                <p><i>Este correo ha sido generado automáticamente. Por favor, no responda a este mensaje.</i></p>
+            </body>
+        </html>
+        """
+
+        # Configurar el mensaje
+        mensaje = MIMEMultipart("alternative")
+        mensaje["From"] = EMAIL
+        mensaje["To"] = destinatario
+        mensaje["Subject"] = "Confirmación de Registro - HYE Arquitectos"
+
+        # Agregar el cuerpo del mensaje
+        mensaje.attach(MIMEText(cuerpo_html, "html"))
+
+        # Conexión al servidor SMTP
+        with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as servidor:
+            servidor.login(EMAIL, PASSWORD)
+            servidor.sendmail(EMAIL, destinatario, mensaje.as_string())
+        print(f"Correo de confirmación enviado a {destinatario}.")
+    except Exception as e:
+        print(f"Error al enviar el correo de confirmación al usuario: {e}")
 
 @app.route('/')
 def formulario():
@@ -116,8 +155,9 @@ def registrar():
             motivo
         ])
 
-        # Enviar notificación por correo
+        # Enviar notificaciones por correo
         enviar_notificacion()
+        enviar_correo_usuario(email)
 
         # Confirmar que se completó
         flash('El registro se ha enviado exitosamente.', 'success')
