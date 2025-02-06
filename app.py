@@ -80,7 +80,7 @@ def enviar_correo_usuario(destinatario):
                 <p>Atentamente,</p>
                 <p><b>Equipo de HYE Arquitectos</b></p>
                 <br>
-                <img src="/static/firma.png" alt="Firma de HYE Arquitectos" style="width: 200px;">
+                <img src="https://hye-arquitectos.online/static/firma.png" alt="Firma de HYE Arquitectos" style="width: 200px;">
                 <br>
                 <p><i>Este correo ha sido generado automáticamente. Por favor, no responda a este mensaje.</i></p>
             </body>
