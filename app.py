@@ -6,11 +6,18 @@ from dotenv import load_dotenv
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from flask import send_from_directory
+
 
 # Cargar variables de entorno desde un archivo .env
 load_dotenv()
 
 app = Flask(__name__)
+
+# Ruta para servir archivos estáticos
+@app.route('/static/<path:filename>')
+def static_files(filename):
+    return send_from_directory('static', filename)
 
 # Verificar que FLASK_SECRET_KEY esté configurada
 if not os.getenv('FLASK_SECRET_KEY'):
