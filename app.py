@@ -48,7 +48,7 @@ except Exception as e:
 SMTP_SERVER = "smtppro.zoho.com"
 SMTP_PORT = 465  # SSL
 EMAIL = "gerencia@hye-arquitectos.online"
-PASSWORD = "S@t1r@24z"  # contraseña 
+PASSWORD = "Hyearquitectos.2025"  # contraseña 
 
 def enviar_notificacion():
     """Función para enviar notificación por correo al registrarse un cliente."""
