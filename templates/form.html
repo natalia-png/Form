@@ -11,6 +11,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Lora:wght@400;600&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/static/styles.css">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 </head>
 <body>
     <div class="container-fluid vh-100 d-flex align-items-center">
@@ -109,6 +111,9 @@
 
                         <!-- Botones de navegación -->
                         <button type="button" class="btn btn-secondary w-50" onclick="mostrarPaso1()">Atrás</button>
+                        <br>
+                        <div class="g-recaptcha" data-sitekey=" 6LdLB-MqAAAAAEtsYEFNgUgZJ-kcYNPdwPhIRS-5 "></div>
+                        <br>
                         <button type="submit" class="btn btn-success w-50">Registrar</button>
                     </div>
                 </form>

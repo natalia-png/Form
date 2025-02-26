@@ -1,4 +1,5 @@
 import os
+import requests
 from flask import Flask, render_template, request, redirect, url_for, flash
 import gspread
 from google.oauth2.service_account import Credentials
@@ -7,7 +8,6 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from flask import send_from_directory
-
 
 # Cargar variables de entorno desde un archivo .env
 load_dotenv()
@@ -24,6 +24,10 @@ if not os.getenv('FLASK_SECRET_KEY'):
     raise RuntimeError("FLASK_SECRET_KEY no está configurada. Asegúrate de configurarla en Render o en .env.")
 
 app.secret_key = os.getenv('FLASK_SECRET_KEY')  # Ahora se toma de variables de entorno
+
+# Claves de reCAPTCHA desde variables de entorno
+RECAPTCHA_SECRET_KEY = os.getenv('RECAPTCHA_SECRET_KEY')
+RECAPTCHA_SITE_KEY = os.getenv('RECAPTCHA_SITE_KEY')
 
 # Configuración de Google Sheets según el entorno
 if os.getenv("RENDER"):  # Detectar si estamos en Render
@@ -53,18 +57,13 @@ PASSWORD = "Hyearquitectos.2025"  # contraseña
 def enviar_notificacion():
     """Función para enviar notificación por correo al registrarse un cliente."""
     try:
-        # Configurar el mensaje
         mensaje = MIMEMultipart()
         mensaje["From"] = EMAIL
         mensaje["To"] = EMAIL
         mensaje["Subject"] = "Nuevo registro de cliente"
-        cuerpo = (
-            "Se ha registrado un nuevo cliente en la base de datos. "
-            "Por favor, verifica la información en el sistema de Clientes Registrados."
-        )
+        cuerpo = "Se ha registrado un nuevo cliente en la base de datos. Por favor, verifica la información en el sistema de Clientes Registrados."
         mensaje.attach(MIMEText(cuerpo, "plain"))
 
-        # Conexión al servidor SMTP
         with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as servidor:
             servidor.login(EMAIL, PASSWORD)
             servidor.sendmail(EMAIL, EMAIL, mensaje.as_string())
@@ -75,7 +74,6 @@ def enviar_notificacion():
 def enviar_correo_usuario(destinatario):
     """Enviar correo de confirmación al usuario registrado."""
     try:
-        # HTML del correo
         cuerpo_html = f"""
         <html>
             <body>
@@ -94,16 +92,12 @@ def enviar_correo_usuario(destinatario):
         </html>
         """
 
-        # Configurar el mensaje
         mensaje = MIMEMultipart("alternative")
         mensaje["From"] = EMAIL
         mensaje["To"] = destinatario
         mensaje["Subject"] = "Confirmación de Registro - HYE Arquitectos"
-
-        # Agregar el cuerpo del mensaje
         mensaje.attach(MIMEText(cuerpo_html, "html"))
 
-        # Conexión al servidor SMTP
         with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as servidor:
             servidor.login(EMAIL, PASSWORD)
             servidor.sendmail(EMAIL, destinatario, mensaje.as_string())
@@ -113,11 +107,24 @@ def enviar_correo_usuario(destinatario):
 
 @app.route('/')
 def formulario():
-    return render_template('form.html')
+    return render_template('form.html', recaptcha_site_key=RECAPTCHA_SITE_KEY)
 
 @app.route('/registrar', methods=['POST'])
 def registrar():
     try:
+        # Verificar reCAPTCHA
+        recaptcha_response = request.form.get('g-recaptcha-response')
+        recaptcha_verify_url = "https://www.google.com/recaptcha/api/siteverify"
+        recaptcha_data = {
+            'secret': RECAPTCHA_SECRET_KEY,
+            'response': recaptcha_response
+        }
+        recaptcha_result = requests.post(recaptcha_verify_url, data=recaptcha_data).json()
+
+        if not recaptcha_result.get("success"):
+            flash('Error en la validación de reCAPTCHA. Por favor, intente de nuevo.', 'error')
+            return redirect(url_for('formulario'))
+
         # Capturar los datos del formulario
         tipo_cliente = request.form.get('tipo_cliente')
         identificacion = request.form.get('identificacion')
@@ -166,7 +173,6 @@ def registrar():
         enviar_notificacion()
         enviar_correo_usuario(email)
 
-        # Confirmar que se completó
         flash('El registro se ha enviado exitosamente.', 'success')
         return redirect(url_for('formulario'))
 
