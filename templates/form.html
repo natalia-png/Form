@@ -32,7 +32,7 @@
             <p class="mt-4 fw-bold">¡Construyamos juntos tus ideas!</p>
         </div>
         <!-- Sección de formulario -->
-        <div class="col-lg-5">
+        <div class="col-lg-5 formulario-container">
             <div class="card shadow-lg p-5 bg-dark bg-opacity-75">
                 <h3 class="text-white text-center mb-4">Registro de Clientes</h3>
                 
@@ -197,5 +197,25 @@
         document.getElementById('modal-contrato').style.display = 'none';
     }
     </script>
+
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    let formulario = document.querySelector(".formulario-container");
+
+    if (formulario) {
+        formulario.style.display = "flex";
+        formulario.style.visibility = "visible";
+        formulario.style.opacity = "1";
+
+        // Hacer scroll automático al formulario en móviles
+        if (window.innerWidth <= 768) {
+            setTimeout(() => {
+                formulario.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 500);
+        }
+    }
+});
+</script>
+
 </body>
 </html>

@@ -313,4 +313,97 @@ select {
     list-style-type: disc; /* Asegurar que las viñetas sean visibles */
     font-weight: 600; /* Hacer que resalten más */
 }
+/* Ajustes específicos para móviles */
+@media (max-width: 768px) {
+    .container-fluid {
+        flex-direction: column; /* Asegura que los elementos se apilen */
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 100vh;
+        padding: 2rem 1rem;
+        overflow-y: auto; /* Permite desplazamiento si es necesario */
+    }
+
+    /* Contenedor de la descripción */
+    .descripcion-container {
+        max-width: 100%;
+        text-align: center;
+        padding: 1.5rem;
+        position: relative;
+    }
+
+    .descripcion-container h1 {
+        font-size: 2rem; /* Reducir tamaño del título en móviles */
+        white-space: normal; /* Permitir saltos de línea */
+        text-align: center;
+    }
+
+    /* Ajustes para el formulario */
+    .formulario-container {
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 1rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .card {
+        width: 100%;
+        max-width: 90%;
+        background: rgba(0, 0, 0, 0.9);
+        padding: 2rem;
+        margin-top: 1rem; /* Separación entre la descripción y el formulario */
+        display: block !important; /* Asegurar que se muestre */
+        visibility: visible !important; /* Forzar visibilidad */
+    }
+
+    /* Asegurar que los elementos del formulario sean visibles */
+    input,
+    textarea,
+    select {
+        width: 100%;
+        font-size: 1rem;
+        border-radius: 8px;
+        padding: 0.8rem;
+        margin-bottom: 1rem;
+    }
+}
+@media (max-width: 768px) {
+    .container-fluid {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 100vh;
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    .formulario-container {
+        width: 100%;
+        max-width: 400px;
+        margin: 2rem auto;
+        padding: 1rem;
+        display: flex !important;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: auto !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 9999;
+    }
+
+    .card {
+        width: 100%;
+        max-width: 400px;
+        padding: 2rem;
+        background: rgba(0, 0, 0, 0.9);
+        display: block !important;
+    }
+}
+
+
 
